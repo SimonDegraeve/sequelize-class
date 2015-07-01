@@ -1,0 +1,35 @@
+{
+  "name": "sequelize-class",
+  "version": "0.1.0",
+  "description": "Define Sequelize models with JavaScript ES6 classes and ES7 decorators.",
+  "author": "Simon Degraeve <simon.degraeve@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint src",
+    "prepublish": "babel --out-dir lib src"
+  },
+  "main": "lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SimonDegraeve/sequelize-class"
+  },
+    "bugs": {
+    "url": "https://github.com/SimonDegraeve/sequelize-class/issues"
+  },
+  "keywords": [
+    "sequelize",
+    "sequelize-plugin",
+    "class"
+  ],
+  "devDependencies": {
+    "babel": "^5.6.11",
+    "babel-eslint": "^3.1.18",
+    "babel-runtime": "^5.6.11",
+    "eslint": "^0.23.0",
+    "eslint-plugin-babel": "^1.0.0"
+  },
+  "dependencies": {
+    "sequelize": "^3.3.2"
+  }
+}
