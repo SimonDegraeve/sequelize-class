@@ -13,7 +13,7 @@ Define [Sequelize](http://docs.sequelizejs.com/en/latest/) models with JavaScrip
 
 ## Installation
 
-```js
+```
 npm install sequelize-class
 ```
 
