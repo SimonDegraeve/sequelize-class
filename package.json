@@ -6,7 +6,6 @@
   "license": "MIT",
   "scripts": {
     "test": "lab --verbose --coverage --threshold 100 --transform test/transform.js --sourcemaps test/index.js",
-    "test-cov-html": "lab --reporter html --output coverage/coverage.html --coverage --threshold 100 --transform test/transform.js --sourcemaps test/index.js",
     "lint": "eslint src",
     "prepublish": "babel --out-dir lib src"
   },
