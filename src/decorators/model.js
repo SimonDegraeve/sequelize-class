@@ -1,96 +1,74 @@
-const blacklist = {
-  constructorProps: [
-    'length',
-    'name',
-    'arguments',
-    'caller',
-    'prototype'
-  ],
-  prototypeProps: [
-    'constructor'
-  ],
-  hookProps: [
-    'beforeValidate',
-    'afterValidate',
-    'beforeBulkCreate',
-    'beforeBulkDestroy',
-    'beforeBulkUpdate',
-    'afterBulkCreate',
-    'afterBulkDestory',
-    'afterBulkUpdate',
-    'beforeCreate',
-    'beforeDestroy',
-    'beforeUpdate',
-    'afterCreate',
-    'afterDestroy',
-    'afterUpdate'
-  ]
+/**
+ * Import dependencies
+ */
+import arrayify from 'arrayify-compact';
+import merge from 'deepmerge';
+import ensurePropsEnumerability from '../utils/ensurePropsEnumerability';
+
+import getBaseOptions from '../options/getBaseOptions';
+import getJoiOptions from '../options/getJoiOptions';
+import getFakerOptions from '../options/getFakerOptions';
+
+import {symbol as attributesSymbol} from './attribute';
+import {symbol as associationsSymbol} from './associations';
+
+
+/**
+ * Define constants
+ */
+const optionsSymbol = Symbol('options');
+
+
+/**
+ * Define model decorator
+ */
+const model = (name, options = {}) => (Class) => {
+  // Ensure name is defined
+  if (typeof name !== 'string' || name === '') {
+    throw new Error('Model name is missing.');
+  }
+
+  // Ensure static/prototype properties are enumerable
+  ensurePropsEnumerability(Class);
+
+  // Ensure hook options are arrays
+  if (options.hooks) {
+    options.hooks = Object.keys(options.hooks).reduce((map, key) => ({
+      ...map, [key]: arrayify(options.hooks[key])
+    }), {});
+  }
+
+  // Store associations in options
+  options.associationsQueue = Class.prototype[associationsSymbol] || [];
+
+  // Create options
+  let opts = merge(options, getBaseOptions(Class));
+  opts = merge(opts, getJoiOptions());
+  opts = merge(opts, getFakerOptions());
+  Class.prototype[optionsSymbol] = opts;
+
+  // Create argument list
+  const args = [name, Class.prototype[attributesSymbol], Class.prototype[optionsSymbol]];
+
+  // Add access to internals
+  Object.defineProperties(args, {
+    name: {
+      get: () => name
+    },
+    attributes: {
+      get: () => Class.prototype[attributesSymbol]
+    },
+    options: {
+      get: () => Class.prototype[optionsSymbol]
+    }
+  });
+
+  // Return list of argument for "sequelize.define" function
+  return args;
 };
 
 
-export default function model() {
-
-  // Return decorated Model
-  return (Model) => {
-
-    // Ensure constructor properties are enumerable
-    // to access props in parent class
-    Object.getOwnPropertyNames(Model)
-      .filter((prop) => blacklist.constructorProps.indexOf(prop) === -1)
-      .forEach((prop) => Object.defineProperty(Model, prop, {enumerable: true}));
-
-    // Ensure prototype properties are enumerable
-    // to access props in parent class
-    Object.getOwnPropertyNames(Model.prototype)
-      .filter((prop) => blacklist.prototypeProps.indexOf(prop) === -1)
-      .forEach((prop) => Object.defineProperty(Model.prototype, prop, {enumerable: true}));
-
-    // Set "definition" getter
-    // to create Seqelize Model Definition and return arguments for "Sequelize.define" function
-    // See http://sequelize.readthedocs.org/en/latest/docs/models-definition/
-    Object.defineProperty(Model.prototype, 'definition', {
-      get() {
-
-        // Set defaults
-        const modelName = this.constructor.name;
-        const attributes = {};
-        const options = {classMethods: {}, instanceMethods: {}, hooks: {}};
-
-        // Iterate over constructor properties
-        for (const prop in this.constructor) {
-          // Convert all functions as "classMethods" or "hooks"
-          if (typeof this.constructor[prop] === 'function') {
-            if (blacklist.hookProps.indexOf(prop) === -1) {
-              options.classMethods[prop] = this.constructor[prop];
-            }
-            else {
-              options.hooks[prop] = this.constructor[prop];
-            }
-          }
-          // Convert the rest as "options"
-          else {
-            options[prop] = this.constructor[prop];
-          }
-        }
-
-        // Iterate over instance properties
-        for (const prop in this) {
-          // Convert all functions as "instanceMethods"
-          if (typeof this[prop] === 'function') {
-            options.instanceMethods[prop] = this[prop];
-          }
-          // Convert the rest as "attributes"
-          else {
-            attributes[prop] = this[prop];
-          }
-        }
-
-        // Return list of arguments for "sequelize.define" function
-        return [modelName, attributes, options];
-      }
-    });
-
-    return Model;
-  };
-}
-
+/**
+ * Export model decorator
+ */
+export default model;

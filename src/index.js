@@ -1,22 +1,17 @@
 /**
- * Relationships
+ * Decorators
  */
-export associate from './associate';
-
-export belongsTo from './decorators/belongsTo';
-export belongsToMany from './decorators/belongsToMany';
-export hasOne from './decorators/hasOne';
-export hasMany from './decorators/hasMany';
-
-
-/**
- * Model definitions
- */
+export {hasOne, hasMany, belongsTo, belongsToMany} from './decorators/associations';
 export model from './decorators/model';
-
+export attribute from './decorators/attribute';
 
 /**
- * Sequelize shortcuts
+ * Sequelize wrapper
  */
-export Sequelize from 'sequelize';
-export DataTypes from 'sequelize/lib/data-types';
+export Sequelize from './sequelizeWrapper';
+
+/**
+ * Embedded
+ */
+export Joi from 'joi';
+export Faker from 'faker';

@@ -1,11 +1,11 @@
 {
   "name": "sequelize-class",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Define Sequelize models with JavaScript ES6 classes and ES7 decorators.",
   "author": "Simon Degraeve <simon.degraeve@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "test": "lab --verbose --coverage --threshold 100 --transform test/transform.js --sourcemaps test/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint src",
     "prepublish": "babel --out-dir lib src"
   },
@@ -23,16 +23,16 @@
     "class"
   ],
   "devDependencies": {
-    "babel": "^5.6.11",
-    "babel-eslint": "^3.1.18",
-    "babel-runtime": "^5.6.11",
-    "code": "^1.4.1",
-    "eslint": "^0.23.0",
-    "eslint-plugin-babel": "^1.0.0",
-    "lab": "^5.12.0",
-    "sqlite3": "^3.0.8"
+    "babel": "^5.6.14",
+    "babel-eslint": "^3.1.23",
+    "eslint": "^0.24.0",
+    "eslint-plugin-babel": "^1.1.0"
   },
   "dependencies": {
+    "arrayify-compact": "^0.2.0",
+    "deepmerge": "^0.2.10",
+    "faker": "^3.0.0",
+    "joi": "^6.5.0",
     "sequelize": "^3.3.2"
   }
 }
